@@ -472,6 +472,78 @@ button:active {
  letter-spacing:.1em;
 }
 
+
+/* PREMIUM CARD INTERACTIONS */
+.card {
+  position: relative;
+  isolation: isolate;
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+  transition:
+    transform .42s cubic-bezier(.2,.8,.2,1),
+    border-color .42s ease,
+    box-shadow .42s ease,
+    background .42s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.card::before {
+  z-index: -1;
+  transition: opacity .45s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-7px) scale(1.035);
+    border-color: #b58be0aa;
+    box-shadow:
+      0 22px 55px #0009,
+      0 0 28px #a875d52b,
+      inset 0 0 22px #a875d50b;
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card:hover .symbol {
+    color: #c7a2ed;
+    transform: rotate(12deg) scale(1.12);
+  }
+}
+
+.card .symbol {
+  display: inline-block;
+  transition: transform .4s ease, color .4s ease;
+}
+
+.card:active {
+  transform: scale(.975);
+  border-color: #c09ae8;
+  box-shadow: 0 5px 22px #0008, 0 0 20px #a875d52b;
+  transition-duration: .12s;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .card {
+    transition-duration: .28s;
+  }
+
+  .card:active {
+    transform: scale(.975);
+    background: linear-gradient(145deg, #21192d, #100d18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card::before,
+  .card .symbol {
+    transition: none !important;
+  }
+}
+
 </style>
 </head>
 <body>
