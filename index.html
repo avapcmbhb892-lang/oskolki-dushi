@@ -262,6 +262,109 @@ header,.hero,main,footer{position:relative;z-index:2}
  .moon-scene,.fog,.comet{animation:none!important}
 }
 
+
+/* Плавность и кинематографичная атмосфера */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color .35s ease,
+    background .35s ease,
+    border-color .35s ease,
+    box-shadow .45s ease,
+    transform .45s cubic-bezier(.2,.75,.25,1),
+    opacity .35s ease;
+}
+
+button:active {
+  transform: scale(.96);
+}
+
+:focus-visible {
+  outline: 2px solid #c9a5ef;
+  outline-offset: 4px;
+}
+
+.card, .poem-card, .poem-item {
+  transition:
+    transform .7s cubic-bezier(.2,.75,.25,1),
+    border-color .6s ease,
+    background .6s ease,
+    box-shadow .7s ease;
+  will-change: transform;
+}
+
+@media (hover:hover) {
+  .card:hover, .poem-card:hover, .poem-item:hover {
+    transform: translateY(-5px);
+    border-color: #a986c977;
+    box-shadow: 0 18px 55px #0005, 0 0 25px #9870bd12;
+  }
+}
+
+.reveal-smooth {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(3px);
+  transition:
+    opacity 1s ease,
+    transform 1s cubic-bezier(.2,.7,.2,1),
+    filter 1s ease;
+}
+
+.reveal-smooth.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.moon-scene {
+  animation-duration: 14s;
+}
+
+.fog {
+  animation-duration: 42s;
+}
+
+.fog-two {
+  animation-duration: 52s;
+}
+
+.comet {
+  animation-timing-function: linear;
+}
+
+.music-player {
+  transition: opacity .5s ease, transform .5s ease, box-shadow .5s ease;
+}
+
+.music-player:hover {
+  box-shadow: 0 12px 45px #0009, 0 0 22px #a77bd722;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .reveal-smooth {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -492,6 +595,37 @@ async function toggleMusic(){
  }
 }
 document.getElementById("musicToggle").addEventListener("click",toggleMusic);
+
+
+// Плавное появление карточек при прокрутке
+(function(){
+  const targets = document.querySelectorAll(
+    '.card, .poem-card, .poem-item, article'
+  );
+
+  if (!('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -35px 0px'
+  });
+
+  targets.forEach((element, index) => {
+    element.classList.add('reveal-smooth');
+    element.style.transitionDelay = Math.min(index % 4, 3) * 90 + 'ms';
+    observer.observe(element);
+  });
+})();
 
 </script>
 </body>
