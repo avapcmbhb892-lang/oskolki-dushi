@@ -454,6 +454,24 @@ button:active {
   to { opacity: .95; }
 }
 
+
+.poem-music {
+ display:flex;align-items:center;justify-content:center;gap:12px;
+ margin:25px 0;padding:15px;
+ border:1px solid #9c7bb655;
+ background:#49364f12;
+}
+.poem-music button {
+ background:#49364f;color:#f4e9d8;
+ border:1px solid #9c7bb688;padding:12px 20px;
+ cursor:pointer;font:10px Manrope,sans-serif;letter-spacing:.12em;
+}
+.poem-music button:hover {background:#62486d}
+.poem-music span {
+ font:10px Manrope,sans-serif;color:#806b8b;
+ letter-spacing:.1em;
+}
+
 </style>
 </head>
 <body>
@@ -577,15 +595,125 @@ poems.forEach((p,i)=>{
 });
 
 let current="";
+let poemAudio=null;
+let poemTimers=[];
+let poemPlaying=false;
+
+const melodies=[
+ // Маска тишины — задумчивое пианино
+ {notes:[261.63,329.63,392,329.63,293.66,349.23,392,349.23],wave:"sine",tempo:850},
+ // Сломанная душа — глубокие, медленные ноты
+ {notes:[146.83,220,174.61,261.63,164.81,246.94,196,293.66],wave:"triangle",tempo:1050},
+ // Одиночество — редкие ноты с большим пространством
+ {notes:[220,0,261.63,0,196,0,293.66,0],wave:"sine",tempo:1250},
+ // Исповедь демона — мистическая гармония
+ {notes:[196,246.94,293.66,369.99,329.63,293.66,246.94,392],wave:"triangle",tempo:900}
+];
+
+function stopPoemMusic(){
+ poemTimers.forEach(t=>clearTimeout(t));
+ poemTimers=[];
+ if(poemAudio){
+  try{poemAudio.close()}catch(e){}
+  poemAudio=null;
+ }
+ poemPlaying=false;
+ const button=document.getElementById("poemMusicToggle");
+ const status=document.getElementById("poemMusicStatus");
+ if(button)button.textContent="▶ СЛУШАТЬ";
+ if(status)status.textContent="Мелодия выключена";
+}
+
+function playPoemMusic(index){
+ stopPoemMusic();
+ const AudioCtx=window.AudioContext||window.webkitAudioContext;
+ if(!AudioCtx)return;
+ poemAudio=new AudioCtx();
+ poemAudio.resume();
+ poemPlaying=true;
+
+ const button=document.getElementById("poemMusicToggle");
+ const status=document.getElementById("poemMusicStatus");
+ button.textContent="Ⅱ ПАУЗА";
+ status.textContent="Мелодия звучит";
+
+ const melody=melodies[index];
+ const ctx=poemAudio;
+ const master=ctx.createGain();
+ master.gain.value=.13;
+ master.connect(ctx.destination);
+
+ const start=ctx.currentTime+.08;
+ const duration=melody.tempo/1000;
+
+ function note(freq,time){
+  if(!freq)return;
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  osc.type=melody.wave;
+  osc.frequency.setValueAtTime(freq,time);
+  gain.gain.setValueAtTime(.001,time);
+  gain.gain.linearRampToValueAtTime(.23,time+.12);
+  gain.gain.exponentialRampToValueAtTime(.001,time+duration*.9);
+  osc.connect(gain);
+  gain.connect(master);
+  osc.start(time);
+  osc.stop(time+duration);
+ }
+
+ // Тихий низкий фон
+ const pad=ctx.createOscillator();
+ const padGain=ctx.createGain();
+ pad.type="sine";
+ pad.frequency.value=[65.41,73.42,55,98][index];
+ padGain.gain.value=.035;
+ pad.connect(padGain);
+ padGain.connect(master);
+ pad.start();
+
+ function scheduleLoop(){
+  if(!poemPlaying || !poemAudio)return;
+  melody.notes.forEach((freq,i)=>note(freq,start+i*duration));
+  const loopLength=melody.notes.length*duration;
+  const timer=setTimeout(()=>{
+   if(poemPlaying)scheduleLoop();
+  },loopLength*1000);
+  poemTimers.push(timer);
+ }
+ scheduleLoop();
+ poemTimers.push(setTimeout(()=>{},0));
+}
+
+function togglePoemMusic(index){
+ if(poemPlaying){
+  stopPoemMusic();
+ }else{
+  playPoemMusic(index);
+ }
+}
+
 function openPoem(i){
+ stopPoemMusic();
  current=poems[i][0]+"\n\n"+poems[i][1];
  document.getElementById("title").textContent=poems[i][0];
  document.getElementById("text").textContent=poems[i][1];
  document.getElementById("copy").textContent="СКОПИРОВАТЬ СТИХ";
+
+ let controls=document.getElementById("poemMusic");
+ if(!controls){
+  controls=document.createElement("div");
+  controls.id="poemMusic";
+  controls.className="poem-music";
+  document.querySelector(".paper .actions").before(controls);
+ }
+ controls.innerHTML='<button id="poemMusicToggle">▶ СЛУШАТЬ</button><span id="poemMusicStatus">Мелодия выключена</span>';
+ document.getElementById("poemMusicToggle").onclick=()=>togglePoemMusic(i);
+
  document.getElementById("modal").classList.add("open");
  document.body.style.overflow="hidden";
 }
 function closePoem(){
+ stopPoemMusic();
  document.getElementById("modal").classList.remove("open");
  document.body.style.overflow="";
 }
