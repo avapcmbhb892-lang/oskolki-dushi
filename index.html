@@ -3,59 +3,226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090811">
-<title>Осколки души</title>
+<meta name="theme-color" content="#08070d">
+<title>Осколки души — Poetry Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+:root {
+ --bg:#08070d;
+ --surface:#111019;
+ --surface2:#171421;
+ --text:#f1eaf5;
+ --muted:#91879e;
+ --purple:#b99ae9;
+ --gold:#c9ad8a;
+ --line:rgba(197,164,235,.15);
+}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at top,#302044,#100d19 48%,#090811);color:#f1eafa;font-family:Georgia,serif;min-height:100vh}
-header{padding:25px;text-align:center;color:#c7a4fa;letter-spacing:5px;font: bold 13px Arial}
-.hero{text-align:center;padding:65px 20px 45px}
-.moon{width:75px;height:75px;border-radius:50%;background:#d8baff;box-shadow:0 0 60px #ad79ff;margin:auto auto 35px}
-h1{font-size:clamp(40px,9vw,75px);font-weight:normal;margin:10px}
-.subtitle{color:#aa9bbd;font-style:italic;line-height:1.8}
-main{max-width:850px;margin:auto;padding:20px}
-h2{text-align:center;font-weight:normal;color:#d6bafa}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
-.card{background:#191522;border:1px solid #443451;border-radius:17px;padding:23px;cursor:pointer;transition:.2s}
-.card:hover{transform:translateY(-4px);border-color:#bd91ff}
-.card h3{font-weight:normal;font-size:24px;color:#e4d1ff}
-.card p{color:#ad9fbd;line-height:1.6}
-button{background:#30223f;border:1px solid #795a9d;color:#e9d8ff;padding:11px 17px;border-radius:25px;cursor:pointer}
-.about{text-align:center;color:#a99bb9;line-height:1.8;padding:55px 15px}
-footer{text-align:center;padding:30px;color:#776b88;font:11px Arial;letter-spacing:3px}
-.modal{display:none;position:fixed;inset:0;background:#080610f5;overflow:auto;padding:20px;align-items:center;justify-content:center}
-.modal.show{display:flex}
-.paper{max-width:600px;width:100%;background:#1b1628;border:1px solid #70538d;border-radius:18px;padding:28px;position:relative}
-.paper h2{text-align:left;font-size:30px}
-.poem{white-space:pre-line;font-size:18px;line-height:2;color:#eee2fa}
-.close{float:right;font-size:24px}
-@media(max-width:500px){.hero{padding-top:40px}.poem{font-size:16px}}
+html{scroll-behavior:smooth}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Manrope,Arial,sans-serif;overflow-x:hidden;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+ background:
+ radial-gradient(ellipse at 50% 0%,#30203d 0%,transparent 48%),
+ radial-gradient(ellipse at 0% 60%,#171126 0%,transparent 42%),
+ #08070d;
+}
+#stars{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.star{
+ position:absolute;width:2px;height:2px;border-radius:50%;
+ background:#e9d9ff;opacity:.45;
+ animation:twinkle var(--duration) ease-in-out infinite alternate;
+}
+@keyframes twinkle{from{opacity:.12;transform:scale(.7)}to{opacity:.8;transform:scale(1.5)}}
+header{
+ max-width:1150px;margin:auto;padding:27px 25px;
+ display:flex;justify-content:space-between;align-items:center;
+ border-bottom:1px solid var(--line);
+}
+.logo{font-size:11px;letter-spacing:.34em;color:#d8c1f3;font-weight:600}
+nav{display:flex;gap:27px}
+nav a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:.12em;transition:.3s}
+nav a:hover{color:var(--purple)}
+.hero{
+ min-height:570px;display:flex;align-items:center;justify-content:center;
+ flex-direction:column;text-align:center;padding:75px 20px 85px;
+ animation:appear 1.4s ease both;
+}
+@keyframes appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.orb{
+ width:90px;height:90px;border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,#fff0ff,#c9a5ed 35%,#785b9c 75%);
+ box-shadow:0 0 35px #a779cf55,0 0 100px #8b5bb833;
+ position:relative;margin-bottom:42px;
+}
+.orb:after{
+ content:"";position:absolute;width:83px;height:83px;
+ border-radius:50%;background:#17101f;left:22px;top:-10px;
+}
+.eyebrow{font-size:10px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+h1{
+ font-family:"Cormorant Garamond",serif;font-weight:300;
+ font-size:clamp(65px,12vw,116px);line-height:.9;
+ letter-spacing:-.035em;margin:25px 0;
+ background:linear-gradient(120deg,#fff 10%,#d9c2ef 55%,#a58abf);
+ color:transparent;background-clip:text;
+}
+.hero p{
+ font-family:"Cormorant Garamond",serif;font-style:italic;
+ font-size:23px;line-height:1.7;color:#b5a8c1;
+}
+.line{width:65px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:35px auto}
+.scroll{font-size:9px;letter-spacing:.3em;color:#766b80;text-transform:uppercase}
+main{max-width:1080px;margin:auto;padding:25px 25px 100px}
+.section-head{text-align:center;margin-bottom:43px}
+.section-head h2{
+ font-family:"Cormorant Garamond",serif;font-size:43px;font-weight:400;margin:0 0 10px;
+}
+.section-head p{font-size:11px;letter-spacing:.12em;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{
+ position:relative;overflow:hidden;min-height:245px;
+ background:linear-gradient(145deg,#191523,#0e0c14);
+ border:1px solid var(--line);padding:32px;
+ transition:transform .5s,border-color .5s,box-shadow .5s;
+ cursor:pointer;animation:appear .8s both;
+}
+.card:before{
+ content:"";position:absolute;inset:0;opacity:0;transition:.5s;
+ background:radial-gradient(circle at 90% 10%,#a87ad51d,transparent 55%);
+}
+.card:hover{
+ transform:translateY(-7px);border-color:#9875bd77;
+ box-shadow:0 20px 55px #0008;
+}
+.card:hover:before{opacity:1}
+.card-top{display:flex;justify-content:space-between;align-items:center}
+.num{font-size:10px;letter-spacing:.22em;color:var(--gold)}
+.symbol{font-family:"Cormorant Garamond",serif;color:#725c89;font-size:30px}
+.card h3{
+ position:relative;font-family:"Cormorant Garamond",serif;
+ font-size:35px;font-weight:400;margin:35px 0 10px;
+}
+.card p{position:relative;color:var(--muted);font-family:"Cormorant Garamond",serif;font-size:18px;line-height:1.5}
+.read{
+ position:relative;margin-top:22px;color:var(--purple);
+ font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+}
+.about{
+ margin:100px auto 0;max-width:680px;text-align:center;
+ border-top:1px solid var(--line);padding:55px 20px;
+}
+.about h2{font:400 37px "Cormorant Garamond",serif}
+.about p{font:italic 20px/1.8 "Cormorant Garamond",serif;color:var(--muted)}
+footer{
+ border-top:1px solid var(--line);text-align:center;
+ padding:30px 15px;color:#70677c;font-size:9px;letter-spacing:.3em;
+}
+.modal{
+ display:none;position:fixed;inset:0;z-index:10;
+ background:#05040bea;backdrop-filter:blur(18px);
+ padding:20px;align-items:center;justify-content:center;
+}
+.modal.open{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.paper{
+ position:relative;width:min(650px,100%);max-height:90vh;overflow:auto;
+ padding:45px 35px;background:linear-gradient(145deg,#1c1727,#100e17);
+ border:1px solid #9474ad55;box-shadow:0 25px 100px #000b;
+ animation:rise .4s ease;
+}
+@keyframes rise{from{transform:translateY(15px);opacity:0}to{transform:translateY(0);opacity:1}}
+.close{
+ position:absolute;right:20px;top:14px;background:none;border:0;
+ color:#c6b1dc;font-size:28px;cursor:pointer;
+}
+.paper h2{font:400 42px "Cormorant Garamond",serif;margin:15px 0 30px}
+.poem{
+ white-space:pre-line;font:400 21px/2 "Cormorant Garamond",serif;
+ color:#e5dbea;
+}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:35px}
+.actions button{
+ border:1px solid #71578d;background:#251d31;color:#e4d5f2;
+ padding:12px 19px;font:11px Manrope;letter-spacing:.08em;cursor:pointer;
+ transition:.3s;
+}
+.actions button:hover{background:#49345e}
+.reveal{opacity:0;transform:translateY(25px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:650px){
+ header{padding:22px 17px}
+ nav{gap:15px}
+ nav a{font-size:9px}
+ .hero{min-height:490px;padding:65px 15px}
+ .grid{grid-template-columns:1fr;gap:13px}
+ .card{min-height:210px;padding:27px}
+ main{padding:20px 16px 65px}
+ .section-head h2{font-size:37px}
+ .paper{padding:40px 23px}
+ .paper h2{font-size:35px}
+ .poem{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
-<header>О С К О Л К И &nbsp; Д У Ш И</header>
+<div id="stars"></div>
+<header>
+ <div class="logo">ОСКОЛКИ ДУШИ</div>
+ <nav><a href="#poems">КОЛЛЕКЦИЯ</a><a href="#about">О СБОРНИКЕ</a></nav>
+</header>
+
 <section class="hero">
-<div class="moon"></div>
-<h1>Осколки души</h1>
-<p class="subtitle">«Мои слова — моя тишина.<br>Мои стихи — то, что осталось внутри».</p>
+ <div class="orb"></div>
+ <div class="eyebrow">PERSONAL POETRY COLLECTION</div>
+ <h1>Осколки души</h1>
+ <p>«Мои слова — моя тишина.<br>Мои стихи — то, что осталось внутри».</p>
+ <div class="line"></div>
+ <div class="scroll">ЛИСТАЙТЕ НИЖЕ · ↓</div>
 </section>
+
 <main>
-<h2>Четыре истории</h2>
-<div class="grid" id="grid"></div>
-<section class="about">
-<p>Здесь собраны слова о том, что порой трудно произнести вслух.</p>
-<p>Каждая душа хранит свою историю.</p>
-</section>
+ <section id="poems">
+  <div class="section-head reveal">
+   <div class="eyebrow">THE COLLECTION</div>
+   <h2>Четыре истории</h2>
+   <p>У КАЖДОЙ ТИШИНЫ ЕСТЬ СВОЙ ГОЛОС</p>
+  </div>
+  <div class="grid" id="grid"></div>
+ </section>
+
+ <section class="about reveal" id="about">
+  <div class="eyebrow">BEHIND THE WORDS</div>
+  <h2>Между строк</h2>
+  <p>Здесь собраны слова, которые порой трудно произнести вслух. Каждое стихотворение — отдельная история. А между строк каждый может найти что-то своё.</p>
+  <div class="line"></div>
+  <div class="eyebrow">НЕ ВСЁ СКАЗАННОЕ МОЖНО УСЛЫШАТЬ</div>
+ </section>
 </main>
-<footer>ОСКОЛКИ ДУШИ · АВТОРСКИЙ СБОРНИК</footer>
+
+<footer>ОСКОЛКИ ДУШИ · POETRY COLLECTION</footer>
+
 <div class="modal" id="modal">
-<div class="paper">
-<button class="close" onclick="closePoem()">×</button>
-<h2 id="title"></h2>
-<div class="poem" id="text"></div>
-<br><button onclick="copyPoem()">Скопировать стих</button>
+ <article class="paper">
+  <button class="close" onclick="closePoem()">×</button>
+  <div class="eyebrow">A FRAGMENT OF THE SOUL</div>
+  <h2 id="title"></h2>
+  <div class="poem" id="text"></div>
+  <div class="actions">
+   <button onclick="copyPoem()" id="copy">СКОПИРОВАТЬ СТИХ</button>
+   <button onclick="closePoem()">НАЗАД К СБОРНИКУ</button>
+  </div>
+ </article>
 </div>
-</div>
+
 <script>
 const poems=[
 ["Маска тишины",`Я прячу боль за маской тишины,
@@ -100,25 +267,59 @@ const poems=[
 Я просто мальчик, потерявший свет,
 Который ищет выход много лет.`]
 ];
-let current="";
+
+const grid=document.getElementById("grid");
 poems.forEach((p,i)=>{
-let c=document.createElement("div");
-c.className="card";
-c.innerHTML=`<small>ИСТОРИЯ 0${i+1}</small><h3>${p[0]}</h3><p>${p[1].split("\n")[0]}</p><button>Читать стих →</button>`;
-c.onclick=()=>openPoem(i);
-document.getElementById("grid").appendChild(c);
+ const card=document.createElement("article");
+ card.className="card reveal";
+ card.innerHTML=`<div class="card-top"><span class="num">CHAPTER 0${i+1}</span><span class="symbol">✧</span></div><h3></h3><p></p><div class="read">ЧИТАТЬ ПРОИЗВЕДЕНИЕ ↗</div>`;
+ card.querySelector("h3").textContent=p[0];
+ card.querySelector("p").textContent=p[1].split("\n")[0];
+ card.onclick=()=>openPoem(i);
+ grid.appendChild(card);
 });
+
+let current="";
 function openPoem(i){
-current=poems[i][0]+"\n\n"+poems[i][1];
-document.getElementById("title").textContent=poems[i][0];
-document.getElementById("text").textContent=poems[i][1];
-document.getElementById("modal").classList.add("show");
+ current=poems[i][0]+"\n\n"+poems[i][1];
+ document.getElementById("title").textContent=poems[i][0];
+ document.getElementById("text").textContent=poems[i][1];
+ document.getElementById("copy").textContent="СКОПИРОВАТЬ СТИХ";
+ document.getElementById("modal").classList.add("open");
+ document.body.style.overflow="hidden";
 }
-function closePoem(){document.getElementById("modal").classList.remove("show")}
+function closePoem(){
+ document.getElementById("modal").classList.remove("open");
+ document.body.style.overflow="";
+}
 async function copyPoem(){
-try{await navigator.clipboard.writeText(current);alert("Стих скопирован!")}
-catch(e){alert("Не удалось скопировать")}
+ try{
+  await navigator.clipboard.writeText(current);
+  document.getElementById("copy").textContent="СКОПИРОВАНО ✓";
+ }catch(e){
+  document.getElementById("copy").textContent="НЕ УДАЛОСЬ СКОПИРОВАТЬ";
+ }
 }
+document.getElementById("modal").addEventListener("click",e=>{
+ if(e.target.id==="modal")closePoem();
+});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closePoem();
+});
+for(let i=0;i<65;i++){
+ const s=document.createElement("i");
+ s.className="star";
+ s.style.left=Math.random()*100+"%";
+ s.style.top=Math.random()*100+"%";
+ s.style.setProperty("--duration",2+Math.random()*5+"s");
+ document.getElementById("stars").appendChild(s);
+}
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target)}
+ });
+},{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
 </script>
 </body>
 </html>
