@@ -171,10 +171,106 @@ footer{
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Атмосфера: луна, туман и падающие звёзды */
+#stars{z-index:1}
+header,.hero,main,footer{position:relative;z-index:2}
+.moon-scene{
+ position:fixed;z-index:0;pointer-events:none;
+ width:min(78vw,650px);aspect-ratio:1;
+ top:5vh;left:50%;transform:translateX(-50%);
+ border-radius:50%;opacity:.19;
+ background:
+ radial-gradient(circle at 32% 28%,#fff2ff 0%,#d8b9ed 9%,#9272b5 38%,#49345f 67%,transparent 70%);
+ box-shadow:0 0 90px #a77bd755,0 0 190px #714a9b33;
+ animation:moonGlow 9s ease-in-out infinite alternate;
+}
+.moon-scene:before,.moon-scene:after{
+ content:"";position:absolute;border-radius:50%;
+ background:#49345f;filter:blur(2px);opacity:.32;
+}
+.moon-scene:before{width:15%;height:15%;top:25%;left:24%}
+.moon-scene:after{width:9%;height:9%;top:58%;left:66%}
+@keyframes moonGlow{to{opacity:.27;filter:brightness(1.15)}}
+.fog{
+ position:fixed;z-index:1;pointer-events:none;
+ width:150vw;height:28vh;left:-25vw;
+ background:linear-gradient(90deg,transparent,#9b79b51a,transparent);
+ filter:blur(35px);opacity:.5;
+ animation:fogMove 28s ease-in-out infinite alternate;
+}
+.fog-one{top:38vh}
+.fog-two{top:72vh;animation-duration:36s;animation-direction:alternate-reverse}
+@keyframes fogMove{from{transform:translateX(-12vw)}to{transform:translateX(12vw)}}
+.comet{
+ position:fixed;z-index:1;pointer-events:none;
+ width:2px;height:2px;border-radius:50%;
+ background:#eadcff;box-shadow:0 0 9px 2px #cba8ef;
+ animation:falling var(--fall-time) linear infinite;
+}
+@keyframes falling{
+ 0%{transform:translate3d(0,-10vh,0);opacity:0}
+ 10%{opacity:.9}
+ 90%{opacity:.7}
+ 100%{transform:translate3d(var(--drift),110vh,0);opacity:0}
+}
+
+/* Стихотворение как страница старинной книги */
+.paper{
+ background:
+ radial-gradient(ellipse at 50% 0%,#fff8e51c,transparent 65%),
+ linear-gradient(135deg,#e9ddc7,#d8c6a9 48%,#eee2cc);
+ color:#302638;border:1px solid #b69b75;
+ box-shadow:0 25px 100px #000c,inset 0 0 45px #8b694522;
+}
+.paper:before{
+ content:"";position:absolute;inset:12px;
+ border:1px solid #9b8060aa;pointer-events:none;
+}
+.paper .eyebrow{color:#806345}
+.paper h2{color:#38283f;border-bottom:1px solid #a58a6a;padding-bottom:18px}
+.paper .poem{color:#382d36}
+.paper .close{color:#5d4561;z-index:2}
+.paper .actions{position:relative;z-index:2}
+.paper .actions button{
+ background:#49364f;color:#f4e9d8;border-color:#806b8b;
+}
+.paper .actions button:hover{background:#62486d}
+
+/* Минималистичный музыкальный плеер */
+.music-player{
+ position:fixed;z-index:5;right:18px;bottom:18px;
+ display:flex;align-items:center;gap:12px;
+ padding:12px 16px;border:1px solid #b99ae955;
+ background:#100d19eF;backdrop-filter:blur(16px);
+ box-shadow:0 8px 35px #0008;border-radius:3px;
+}
+.music-button{
+ width:38px;height:38px;border:1px solid #b99ae977;
+ border-radius:50%;background:#241a31;color:#e9d9ff;
+ font-size:15px;cursor:pointer;transition:.25s;
+}
+.music-button:hover{background:#49345e;box-shadow:0 0 18px #a77bd755}
+.music-label{font:10px Manrope,sans-serif;letter-spacing:.12em;color:#e6d8f2}
+.music-status{font:9px Manrope,sans-serif;color:#91879e;margin-top:4px}
+@media(max-width:650px){
+ .moon-scene{width:105vw;top:12vh}
+ .music-player{right:12px;bottom:12px;padding:9px 12px}
+ .paper:before{inset:8px}
+}
+@media(prefers-reduced-motion:reduce){
+ .moon-scene,.fog,.comet{animation:none!important}
+}
+
 </style>
 </head>
 <body>
 <div id="stars"></div>
+
+<div class="moon-scene" aria-hidden="true"></div>
+<div class="fog fog-one" aria-hidden="true"></div>
+<div class="fog fog-two" aria-hidden="true"></div>
+
 <header>
  <div class="logo">ОСКОЛКИ ДУШИ</div>
  <nav><a href="#poems">КОЛЛЕКЦИЯ</a><a href="#about">О СБОРНИКЕ</a></nav>
@@ -207,6 +303,15 @@ footer{
   <div class="eyebrow">НЕ ВСЁ СКАЗАННОЕ МОЖНО УСЛЫШАТЬ</div>
  </section>
 </main>
+
+
+<div class="music-player">
+ <button class="music-button" id="musicToggle" aria-label="Включить музыку">▶</button>
+ <div>
+  <div class="music-label">АТМОСФЕРА · ОСКОЛКИ ДУШИ</div>
+  <div class="music-status" id="musicStatus">Музыка выключена</div>
+ </div>
+</div>
 
 <footer>ОСКОЛКИ ДУШИ · POETRY COLLECTION</footer>
 
@@ -320,6 +425,74 @@ const observer=new IntersectionObserver(entries=>{
  });
 },{threshold:.12});
 document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+
+// Падающие звёзды
+for(let i=0;i<12;i++){
+ const c=document.createElement("i");
+ c.className="comet";
+ c.style.left=Math.random()*100+"%";
+ c.style.setProperty("--fall-time",(12+Math.random()*20)+"s");
+ c.style.setProperty("--drift",(Math.random()*100-50)+"px");
+ c.style.animationDelay=(-Math.random()*25)+"s";
+ document.body.appendChild(c);
+}
+
+// Оригинальная фоновая мелодия на Web Audio API
+let ambientContext=null;
+let ambientNodes=[];
+let musicPlaying=false;
+
+async function toggleMusic(){
+ const button=document.getElementById("musicToggle");
+ const status=document.getElementById("musicStatus");
+
+ if(!musicPlaying){
+  try{
+   const AudioCtx=window.AudioContext||window.webkitAudioContext;
+   if(!AudioCtx){
+    status.textContent="Аудио не поддерживается";
+    return;
+   }
+   if(!ambientContext) ambientContext=new AudioCtx();
+   await ambientContext.resume();
+
+   const master=ambientContext.createGain();
+   master.gain.value=0.045;
+   master.connect(ambientContext.destination);
+
+   [55,82.41,110].forEach((freq,index)=>{
+    const osc=ambientContext.createOscillator();
+    const gain=ambientContext.createGain();
+    osc.type=index===2?"sine":"triangle";
+    osc.frequency.value=freq;
+    gain.gain.value=index===0?.55:(index===1?.24:.12);
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start();
+    ambientNodes.push(osc,gain);
+   });
+
+   ambientNodes.push(master);
+   musicPlaying=true;
+   button.textContent="Ⅱ";
+   button.setAttribute("aria-label","Выключить музыку");
+   status.textContent="Атмосфера включена";
+  }catch(error){
+   status.textContent="Не удалось включить звук";
+  }
+ }else{
+  ambientNodes.forEach(node=>{
+   try{if(node.stop)node.stop();if(node.disconnect)node.disconnect()}catch(e){}
+  });
+  ambientNodes=[];
+  musicPlaying=false;
+  button.textContent="▶";
+  button.setAttribute("aria-label","Включить музыку");
+  status.textContent="Музыка выключена";
+ }
+}
+document.getElementById("musicToggle").addEventListener("click",toggleMusic);
+
 </script>
 </body>
 </html>
