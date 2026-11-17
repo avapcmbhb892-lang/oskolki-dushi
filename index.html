@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090811">
+<title>Осколки души</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#302044,#100d19 48%,#090811);color:#f1eafa;font-family:Georgia,serif;min-height:100vh}
+header{padding:25px;text-align:center;color:#c7a4fa;letter-spacing:5px;font: bold 13px Arial}
+.hero{text-align:center;padding:65px 20px 45px}
+.moon{width:75px;height:75px;border-radius:50%;background:#d8baff;box-shadow:0 0 60px #ad79ff;margin:auto auto 35px}
+h1{font-size:clamp(40px,9vw,75px);font-weight:normal;margin:10px}
+.subtitle{color:#aa9bbd;font-style:italic;line-height:1.8}
+main{max-width:850px;margin:auto;padding:20px}
+h2{text-align:center;font-weight:normal;color:#d6bafa}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
+.card{background:#191522;border:1px solid #443451;border-radius:17px;padding:23px;cursor:pointer;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:#bd91ff}
+.card h3{font-weight:normal;font-size:24px;color:#e4d1ff}
+.card p{color:#ad9fbd;line-height:1.6}
+button{background:#30223f;border:1px solid #795a9d;color:#e9d8ff;padding:11px 17px;border-radius:25px;cursor:pointer}
+.about{text-align:center;color:#a99bb9;line-height:1.8;padding:55px 15px}
+footer{text-align:center;padding:30px;color:#776b88;font:11px Arial;letter-spacing:3px}
+.modal{display:none;position:fixed;inset:0;background:#080610f5;overflow:auto;padding:20px;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.paper{max-width:600px;width:100%;background:#1b1628;border:1px solid #70538d;border-radius:18px;padding:28px;position:relative}
+.paper h2{text-align:left;font-size:30px}
+.poem{white-space:pre-line;font-size:18px;line-height:2;color:#eee2fa}
+.close{float:right;font-size:24px}
+@media(max-width:500px){.hero{padding-top:40px}.poem{font-size:16px}}
+</style>
+</head>
+<body>
+<header>О С К О Л К И &nbsp; Д У Ш И</header>
+<section class="hero">
+<div class="moon"></div>
+<h1>Осколки души</h1>
+<p class="subtitle">«Мои слова — моя тишина.<br>Мои стихи — то, что осталось внутри».</p>
+</section>
+<main>
+<h2>Четыре истории</h2>
+<div class="grid" id="grid"></div>
+<section class="about">
+<p>Здесь собраны слова о том, что порой трудно произнести вслух.</p>
+<p>Каждая душа хранит свою историю.</p>
+</section>
+</main>
+<footer>ОСКОЛКИ ДУШИ · АВТОРСКИЙ СБОРНИК</footer>
+<div class="modal" id="modal">
+<div class="paper">
+<button class="close" onclick="closePoem()">×</button>
+<h2 id="title"></h2>
+<div class="poem" id="text"></div>
+<br><button onclick="copyPoem()">Скопировать стих</button>
+</div>
+</div>
+<script>
+const poems=[
+["Маска тишины",`Я прячу боль за маской тишины,
+Где все мои мечты давно погребены.
+Я стал чужим среди родных людей,
+И с каждым днём мне кажется темней.
+
+Я улыбаюсь, будто всё прошло,
+Хотя внутри давно уже темно.
+И если спросишь, что со мной не так,
+Я промолчу, скрывая боль во мрак.`],
+["Сломанная душа",`Когда-то свет горел в моих глазах,
+Теперь лишь тени прячутся впотьмах.
+Я улыбаться научился невзначай,
+Чтоб никто не замечал мою печаль.
+
+Я потерял дорогу среди стен,
+Застрял навеки в памяти тех сцен.
+И пусть никто не видит моих ран,
+Я всё ещё пытаюсь выбраться из тьмы сам.`],
+["Одиночество",`Я стал молчать, ведь слов уже не нахожу,
+Я даже собственную боль не расскажу.
+Меня не слышат, хоть я рядом стою,
+И я теряю веру в тишину свою.
+
+В толпе людей я будто бы один,
+Как незаметный, брошенный исполин.
+И сколько ни кричи — никто не услыхает,
+Когда твоя душа безмолвно угасает.`],
+["Исповедь демона",`У демона рога и чёрные глаза,
+Но кто сказал, что плакать им нельзя?
+Под маской тьмы скрывается душа,
+Что просто хочет жить, не зная страха.
+
+Я не чудовище, хоть выгляжу не так,
+Мне тоже страшно оставаться в темнотах.
+Мои рога — лишь часть моей судьбы,
+А сердце просит капельку любви.
+
+И если демон — значит, я плохой,
+То почему мне страшно быть собой?
+Я просто мальчик, потерявший свет,
+Который ищет выход много лет.`]
+];
+let current="";
+poems.forEach((p,i)=>{
+let c=document.createElement("div");
+c.className="card";
+c.innerHTML=`<small>ИСТОРИЯ 0${i+1}</small><h3>${p[0]}</h3><p>${p[1].split("\n")[0]}</p><button>Читать стих →</button>`;
+c.onclick=()=>openPoem(i);
+document.getElementById("grid").appendChild(c);
+});
+function openPoem(i){
+current=poems[i][0]+"\n\n"+poems[i][1];
+document.getElementById("title").textContent=poems[i][0];
+document.getElementById("text").textContent=poems[i][1];
+document.getElementById("modal").classList.add("show");
+}
+function closePoem(){document.getElementById("modal").classList.remove("show")}
+async function copyPoem(){
+try{await navigator.clipboard.writeText(current);alert("Стих скопирован!")}
+catch(e){alert("Не удалось скопировать")}
+}
+</script>
+</body>
+</html>
