@@ -431,6 +431,29 @@ button:active {
   }
 }
 
+
+/* Реальное движение звёзд */
+.star {
+  animation:
+    starTravel 32s linear infinite,
+    starPulse 3.5s ease-in-out infinite alternate !important;
+  will-change: transform, opacity;
+}
+
+.star:nth-child(3n) { animation-duration: 43s, 4s !important; }
+.star:nth-child(3n + 1) { animation-duration: 29s, 3s !important; }
+.star:nth-child(3n + 2) { animation-duration: 37s, 5s !important; }
+
+@keyframes starTravel {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(100px, 75px, 0); }
+}
+
+@keyframes starPulse {
+  from { opacity: .2; }
+  to { opacity: .95; }
+}
+
 </style>
 </head>
 <body>
