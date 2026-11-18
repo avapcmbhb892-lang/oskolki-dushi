@@ -546,35 +546,67 @@ button, a, .card {
 
 
 /* INTERACTIVE SCALE EFFECT */
-:where(a, button, .card, .nav-link, .poem-card, .interactive) {
-    transition: all 220ms cubic-bezier(.2,.75,.25,1);
+.card {
+    transition: transform .35s cubic-bezier(.2,.75,.25,1),
+                border-color .35s ease, box-shadow .35s ease;
     transform-origin: center;
     -webkit-tap-highlight-color: transparent;
 }
 
+.card h3, .card p, .card .read {
+    transition: transform .3s cubic-bezier(.2,.75,.25,1);
+    transform-origin: left center;
+}
+
+a, button {
+    transition: transform .22s ease, color .22s ease,
+                background .22s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
 @media (hover: hover) and (pointer: fine) {
-    :where(a, button, .card, .nav-link, .poem-card, .interactive):hover {
-        scale: 1.035;
-        filter: brightness(1.12);
+    .card:hover {
+        transform: translateY(-7px) scale(1.035);
+        border-color: #b99ae9;
+        box-shadow: 0 20px 55px #0008, 0 0 25px #9870bd20;
     }
 
-    :where(.card, .poem-card):hover {
-        scale: 1.018;
+    .card:hover h3,
+    .card:hover p,
+    .card:hover .read {
+        transform: scale(1.06);
+    }
+
+    a:hover, button:hover {
+        transform: scale(1.045);
     }
 }
 
-:where(a, button, .card, .nav-link, .poem-card, .interactive):active {
-    scale: .97;
-    filter: brightness(1.18);
+@media (hover: none) and (pointer: coarse) {
+    .card:active {
+        transform: translateY(-2px) scale(1.035);
+        border-color: #b99ae9;
+        box-shadow: 0 15px 40px #0008, 0 0 22px #9870bd30;
+    }
+
+    .card:active h3,
+    .card:active p,
+    .card:active .read {
+        transform: scale(1.06);
+    }
+
+    a:active, button:active {
+        transform: scale(1.06);
+    }
 }
 
-:where(a, button, .card, .nav-link, .poem-card, .interactive):focus-visible {
+:focus-visible {
     outline: 2px solid rgba(190, 145, 255, .75);
     outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    :where(a, button, .card, .nav-link, .poem-card, .interactive) {
+    .card, .card h3, .card p, .card .read, a, button {
         transition: none;
     }
 }
