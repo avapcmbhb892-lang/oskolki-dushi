@@ -703,10 +703,104 @@ a, button {
  .divider-shard,.divider-spark { animation:none; }
 }
 
+
+/* THREE PREMIUM FEATURES */
+
+/* Ambient background */
+#ambient-scene {
+ position:fixed;
+ inset:0;
+ z-index:-1;
+ overflow:hidden;
+ pointer-events:none;
+}
+.ambient-glow {
+ position:absolute;
+ width:320px;height:320px;
+ border-radius:50%;
+ filter:blur(85px);
+ opacity:.13;
+ background:#9562d9;
+ animation:ambientMove 18s ease-in-out infinite alternate;
+}
+.ambient-glow.one {top:12%;left:-180px}
+.ambient-glow.two {
+ right:-190px;top:55%;
+ background:#477fbd;
+ animation-delay:-8s;
+}
+.ambient-glow.three {
+ left:35%;bottom:-250px;
+ background:#7950a9;
+ animation-delay:-4s;
+}
+.ambient-particle {
+ position:absolute;
+ width:2px;height:2px;
+ border-radius:50%;
+ background:#d9c5ff;
+ box-shadow:0 0 9px #b99ae9;
+ opacity:.4;
+ animation:ambientTwinkle var(--duration) ease-in-out infinite alternate;
+}
+@keyframes ambientMove {
+ from {transform:translate3d(-15px,-10px,0) scale(.9)}
+ to {transform:translate3d(35px,25px,0) scale(1.2)}
+}
+@keyframes ambientTwinkle {
+ from {opacity:.12;transform:scale(.7)}
+ to {opacity:.8;transform:scale(1.8)}
+}
+
+/* Scroll progress */
+#scrollProgress {
+ position:fixed;
+ z-index:9999;
+ top:0;left:0;
+ width:0;height:3px;
+ background:linear-gradient(90deg,#8060bc,#d8baff,#70c5e9);
+ box-shadow:0 0 12px #ad8ce9aa;
+ pointer-events:none;
+}
+
+/* Reading mode */
+.modal.reading-mode {
+ background:rgba(5,4,9,.97);
+}
+.modal.reading-mode .paper {
+ width:min(780px,94vw);
+ padding:clamp(28px,6vw,65px);
+ background:linear-gradient(155deg,#15111e,#0d0b12);
+ border-color:#b99ae955;
+ box-shadow:0 0 65px #8c62bb20;
+}
+.modal.reading-mode .poem {
+ max-width:560px;
+ margin:35px auto;
+ font-size:clamp(19px,3vw,23px);
+ line-height:2.05;
+ letter-spacing:.015em;
+ color:#e2d7eb;
+}
+.modal.reading-mode .paper h2 {
+ font-size:clamp(36px,7vw,52px);
+}
+#readingToggle.active {
+ background:#48345f;
+ border-color:#b99ae9;
+ color:#fff;
+}
+
+@media(prefers-reduced-motion:reduce) {
+ .ambient-glow,.ambient-particle {animation:none}
+}
+
 </style>
 </head>
 <body>
 <div id="stars"></div>
+<div id="ambient-scene" aria-hidden="true"><i class="ambient-glow one"></i><i class="ambient-glow two"></i><i class="ambient-glow three"></i></div>
+<div id="scrollProgress" aria-hidden="true"></div>
 
 <div class="moon-scene" aria-hidden="true"></div>
 <div class="fog fog-one" aria-hidden="true"></div>
@@ -914,6 +1008,7 @@ a, button {
   <div class="poem" id="text"></div>
 
   <div class="actions">
+   <button id="readingToggle" onclick="toggleReadingMode()">РЕЖИМ ЧТЕНИЯ</button>
    <button onclick="copyPoem()" id="copy">СКОПИРОВАТЬ СТИХ</button>
    <button onclick="closePoem()">НАЗАД К СБОРНИКУ</button>
   </div>
@@ -1010,16 +1105,30 @@ poems.forEach((p,i)=>{
 });
 
 let current="";
+function toggleReadingMode(){
+ const modal = document.getElementById("modal");
+ const button = document.getElementById("readingToggle");
+ const enabled = modal.classList.toggle("reading-mode");
+ button.classList.toggle("active", enabled);
+ button.textContent = enabled ? "ОБЫЧНЫЙ РЕЖИМ" : "РЕЖИМ ЧТЕНИЯ";
+}
+
 function openPoem(i){
  current=poems[i][0]+"\n\n"+poems[i][1];
  document.getElementById("title").textContent=poems[i][0];
  document.getElementById("text").textContent=poems[i][1];
  document.getElementById("copy").textContent="СКОПИРОВАТЬ СТИХ";
+ document.getElementById("modal").classList.remove("reading-mode");
+ document.getElementById("readingToggle").classList.remove("active");
+ document.getElementById("readingToggle").textContent="РЕЖИМ ЧТЕНИЯ";
  document.getElementById("modal").classList.add("open");
  document.body.style.overflow="hidden";
 }
 function closePoem(){
  document.getElementById("modal").classList.remove("open");
+ document.getElementById("modal").classList.remove("reading-mode");
+ document.getElementById("readingToggle").classList.remove("active");
+ document.getElementById("readingToggle").textContent="РЕЖИМ ЧТЕНИЯ";
  document.body.style.overflow="";
 }
 async function copyPoem(){
@@ -1050,6 +1159,29 @@ const observer=new IntersectionObserver(entries=>{
  });
 },{threshold:.12});
 document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+
+
+// AMBIENT PARTICLES
+const ambient = document.getElementById("ambient-scene");
+for(let i=0;i<32;i++){
+ const particle=document.createElement("i");
+ particle.className="ambient-particle";
+ particle.style.left=Math.random()*100+"%";
+ particle.style.top=Math.random()*100+"%";
+ particle.style.setProperty("--duration",(3+Math.random()*7)+"s");
+ particle.style.animationDelay=(-Math.random()*8)+"s";
+ ambient.appendChild(particle);
+}
+
+// SCROLL PROGRESS
+function updateScrollProgress(){
+ const max=document.documentElement.scrollHeight-window.innerHeight;
+ const progress=max>0 ? window.scrollY/max*100 : 0;
+ document.getElementById("scrollProgress").style.width=progress+"%";
+}
+window.addEventListener("scroll",updateScrollProgress,{passive:true});
+window.addEventListener("resize",updateScrollProgress);
+updateScrollProgress();
 
 // Падающие звёзды
 for(let i=0;i<12;i++){
