@@ -809,36 +809,19 @@ a, button {
   opacity:0;
   transform:translate3d(-100px,-100px,0);
   transition:opacity .2s ease;
-  filter:drop-shadow(0 0 7px #b78cff) drop-shadow(0 0 15px #8755d9);
+  filter:none;
   will-change:transform;
  }
  #crystalCursor.visible {opacity:1}
  #crystalCursor svg {width:100%;height:100%;overflow:visible}
  #crystalCursor.hovering {
   scale:1.3;
-  filter:drop-shadow(0 0 10px #d5b6ff) drop-shadow(0 0 22px #9864e8);
+  filter:none;
  }
  #crystalCursor.clicking {scale:.72}
- .crystal-trail {
-  position:fixed;
-  z-index:10000;
-  width:5px;height:5px;
-  border-radius:50%;
-  pointer-events:none;
-  background:#c9a5ff;
-  box-shadow:0 0 8px 3px #a875eeaa,0 0 17px #8f5bdb;
-  animation:crystalTrailFade .55s ease-out forwards;
- }
- @keyframes crystalTrailFade {
-  from {opacity:.8;transform:scale(1)}
-  to {opacity:0;transform:scale(.1) translateY(9px)}
- }
- #crystalCursor.burst {
-  filter:drop-shadow(0 0 15px #e4cfff) drop-shadow(0 0 28px #a36bea);
- }
+ #crystalCursor.burst {opacity:.8}
 }
 @media (prefers-reduced-motion:reduce) {
- .crystal-trail {animation-duration:.2s}
 }
 
 </style>
@@ -1270,29 +1253,13 @@ for(let i=0;i<12;i++){
  const cursor = document.getElementById("crystalCursor");
  if (!cursor) return;
 
- let lastTrail = 0;
 
  document.addEventListener("pointermove", event => {
   cursor.style.transform =
    `translate3d(${event.clientX - 15}px,${event.clientY - 19}px,0)`;
   cursor.classList.add("visible");
 
-  const now = performance.now();
-  if (now - lastTrail > 38) {
-   lastTrail = now;
-   const dot = document.createElement("i");
-   dot.className = "crystal-trail";
-   dot.style.left = event.clientX + "px";
-   dot.style.top = event.clientY + "px";
-   document.body.appendChild(dot);
-   setTimeout(() => dot.remove(), 600);
-  }
 
-  const target = event.target;
-  cursor.classList.toggle(
-   "hovering",
-   !!(target && target.closest("a,button,[role='button'],input,select,textarea"))
-  );
  }, {passive:true});
 
  document.addEventListener("pointerdown", () => {
