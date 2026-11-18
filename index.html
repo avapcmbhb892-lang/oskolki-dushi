@@ -237,31 +237,6 @@ header,.hero,main,footer{position:relative;z-index:2}
 }
 .paper .actions button:hover{background:#62486d}
 
-/* Минималистичный музыкальный плеер */
-.music-player{
- position:fixed;z-index:5;right:18px;bottom:18px;
- display:flex;align-items:center;gap:12px;
- padding:12px 16px;border:1px solid #b99ae955;
- background:#100d19eF;backdrop-filter:blur(16px);
- box-shadow:0 8px 35px #0008;border-radius:3px;
-}
-.music-button{
- width:38px;height:38px;border:1px solid #b99ae977;
- border-radius:50%;background:#241a31;color:#e9d9ff;
- font-size:15px;cursor:pointer;transition:.25s;
-}
-.music-button:hover{background:#49345e;box-shadow:0 0 18px #a77bd755}
-.music-label{font:10px Manrope,sans-serif;letter-spacing:.12em;color:#e6d8f2}
-.music-status{font:9px Manrope,sans-serif;color:#91879e;margin-top:4px}
-@media(max-width:650px){
- .moon-scene{width:105vw;top:12vh}
- .music-player{right:12px;bottom:12px;padding:9px 12px}
- .paper:before{inset:8px}
-}
-@media(prefers-reduced-motion:reduce){
- .moon-scene,.fog,.comet{animation:none!important}
-}
-
 
 /* Плавность и кинематографичная атмосфера */
 html {
@@ -343,11 +318,10 @@ button:active {
   animation-timing-function: linear;
 }
 
-.music-player {
+/* music-player styles removed */
   transition: opacity .5s ease, transform .5s ease, box-shadow .5s ease;
 }
 
-.music-player:hover {
   box-shadow: 0 12px 45px #0009, 0 0 22px #a77bd722;
 }
 
@@ -455,95 +429,6 @@ button:active {
 }
 
 
-.poem-music {
- display:flex;align-items:center;justify-content:center;gap:12px;
- margin:25px 0;padding:15px;
- border:1px solid #9c7bb655;
- background:#49364f12;
-}
-.poem-music button {
- background:#49364f;color:#f4e9d8;
- border:1px solid #9c7bb688;padding:12px 20px;
- cursor:pointer;font:10px Manrope,sans-serif;letter-spacing:.12em;
-}
-.poem-music button:hover {background:#62486d}
-.poem-music span {
- font:10px Manrope,sans-serif;color:#806b8b;
- letter-spacing:.1em;
-}
-
-
-/* PREMIUM CARD INTERACTIONS */
-.card {
-  position: relative;
-  isolation: isolate;
-  transform: translateY(0) scale(1);
-  transform-origin: center;
-  transition:
-    transform .42s cubic-bezier(.2,.8,.2,1),
-    border-color .42s ease,
-    box-shadow .42s ease,
-    background .42s ease;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-.card::before {
-  z-index: -1;
-  transition: opacity .45s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    transform: translateY(-7px) scale(1.035);
-    border-color: #b58be0aa;
-    box-shadow:
-      0 22px 55px #0009,
-      0 0 28px #a875d52b,
-      inset 0 0 22px #a875d50b;
-  }
-
-  .card:hover::before {
-    opacity: 1;
-  }
-
-  .card:hover .symbol {
-    color: #c7a2ed;
-    transform: rotate(12deg) scale(1.12);
-  }
-}
-
-.card .symbol {
-  display: inline-block;
-  transition: transform .4s ease, color .4s ease;
-}
-
-.card:active {
-  transform: scale(.975);
-  border-color: #c09ae8;
-  box-shadow: 0 5px 22px #0008, 0 0 20px #a875d52b;
-  transition-duration: .12s;
-}
-
-@media (hover: none), (pointer: coarse) {
-  .card {
-    transition-duration: .28s;
-  }
-
-  .card:active {
-    transform: scale(.975);
-    background: linear-gradient(145deg, #21192d, #100d18);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  .card::before,
-  .card .symbol {
-    transition: none !important;
-  }
-}
-
 </style>
 </head>
 <body>
@@ -587,12 +472,7 @@ button:active {
 </main>
 
 
-<div class="music-player">
- <button class="music-button" id="musicToggle" aria-label="Включить музыку">▶</button>
- <div>
-  <div class="music-label">АТМОСФЕРА · ОСКОЛКИ ДУШИ</div>
-  <div class="music-status" id="musicStatus">Музыка выключена</div>
- </div>
+
 </div>
 
 <footer>ОСКОЛКИ ДУШИ · POETRY COLLECTION</footer>
@@ -719,93 +599,6 @@ for(let i=0;i<12;i++){
  c.style.animationDelay=(-Math.random()*25)+"s";
  document.body.appendChild(c);
 }
-
-// Оригинальная фоновая мелодия на Web Audio API
-let ambientContext=null;
-let ambientNodes=[];
-let musicPlaying=false;
-
-async function toggleMusic(){
- const button=document.getElementById("musicToggle");
- const status=document.getElementById("musicStatus");
-
- if(!musicPlaying){
-  try{
-   const AudioCtx=window.AudioContext||window.webkitAudioContext;
-   if(!AudioCtx){
-    status.textContent="Аудио не поддерживается";
-    return;
-   }
-   if(!ambientContext) ambientContext=new AudioCtx();
-   await ambientContext.resume();
-
-   const master=ambientContext.createGain();
-   master.gain.value=0.045;
-   master.connect(ambientContext.destination);
-
-   [55,82.41,110].forEach((freq,index)=>{
-    const osc=ambientContext.createOscillator();
-    const gain=ambientContext.createGain();
-    osc.type=index===2?"sine":"triangle";
-    osc.frequency.value=freq;
-    gain.gain.value=index===0?.55:(index===1?.24:.12);
-    osc.connect(gain);
-    gain.connect(master);
-    osc.start();
-    ambientNodes.push(osc,gain);
-   });
-
-   ambientNodes.push(master);
-   musicPlaying=true;
-   button.textContent="Ⅱ";
-   button.setAttribute("aria-label","Выключить музыку");
-   status.textContent="Атмосфера включена";
-  }catch(error){
-   status.textContent="Не удалось включить звук";
-  }
- }else{
-  ambientNodes.forEach(node=>{
-   try{if(node.stop)node.stop();if(node.disconnect)node.disconnect()}catch(e){}
-  });
-  ambientNodes=[];
-  musicPlaying=false;
-  button.textContent="▶";
-  button.setAttribute("aria-label","Включить музыку");
-  status.textContent="Музыка выключена";
- }
-}
-document.getElementById("musicToggle").addEventListener("click",toggleMusic);
-
-
-// Плавное появление карточек при прокрутке
-(function(){
-  const targets = document.querySelectorAll(
-    '.card, .poem-card, .poem-item, article'
-  );
-
-  if (!('IntersectionObserver' in window) ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return;
-  }
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -35px 0px'
-  });
-
-  targets.forEach((element, index) => {
-    element.classList.add('reveal-smooth');
-    element.style.transitionDelay = Math.min(index % 4, 3) * 90 + 'ms';
-    observer.observe(element);
-  });
-})();
 
 </script>
 </body>
