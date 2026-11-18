@@ -603,10 +603,7 @@ button:active {
   <div class="eyebrow">A FRAGMENT OF THE SOUL</div>
   <h2 id="title"></h2>
   <div class="poem" id="text"></div>
-  <div class="poem-music" id="poemMusic">
-   <button id="poemMusicToggle" type="button">▶ СЛУШАТЬ МЕЛОДИЮ</button>
-   <span id="poemMusicStatus">Музыка выключена</span>
-  </div>
+
   <div class="actions">
    <button onclick="copyPoem()" id="copy">СКОПИРОВАТЬ СТИХ</button>
    <button onclick="closePoem()">НАЗАД К СБОРНИКУ</button>
@@ -671,98 +668,15 @@ poems.forEach((p,i)=>{
 });
 
 let current="";
-let poemAudio=null;
-let poemTimers=[];
-let poemPlaying=false;
-
-const melodies=[
- {notes:[261.63,329.63,392,329.63,293.66,349.23,392,349.23],wave:"sine",tempo:850},
- {notes:[146.83,220,174.61,261.63,164.81,246.94,196,293.66],wave:"triangle",tempo:1050},
- {notes:[220,261.63,196,293.66],wave:"sine",tempo:1200},
- {notes:[196,246.94,293.66,369.99,329.63,293.66,246.94,392],wave:"triangle",tempo:900}
-];
-
-function stopPoemMusic(){
- poemPlaying=false;
- poemTimers.forEach(clearTimeout);
- poemTimers=[];
- if(poemAudio){
-  poemAudio.close().catch(()=>{});
-  poemAudio=null;
- }
- const b=document.getElementById("poemMusicToggle");
- const st=document.getElementById("poemMusicStatus");
- if(b)b.textContent="▶ СЛУШАТЬ МЕЛОДИЮ";
- if(st)st.textContent="Музыка выключена";
-}
-
-function playPoemMusic(index){
- stopPoemMusic();
- const AudioCtx=window.AudioContext||window.webkitAudioContext;
- if(!AudioCtx){
-  document.getElementById("poemMusicStatus").textContent="Браузер не поддерживает звук";
-  return;
- }
- const ctx=new AudioCtx();
- poemAudio=ctx;
- ctx.resume();
-
- const master=ctx.createGain();
- master.gain.value=.12;
- master.connect(ctx.destination);
-
- const melody=melodies[index];
- let noteIndex=0;
- poemPlaying=true;
-
- const b=document.getElementById("poemMusicToggle");
- const st=document.getElementById("poemMusicStatus");
- b.textContent="Ⅱ ОСТАНОВИТЬ";
- st.textContent="Сейчас звучит мелодия №"+(index+1);
-
- function playNext(){
-  if(!poemPlaying || poemAudio!==ctx)return;
-  const freq=melody.notes[noteIndex % melody.notes.length];
-  const now=ctx.currentTime;
-
-  if(freq){
-   const osc=ctx.createOscillator();
-   const gain=ctx.createGain();
-   osc.type=melody.wave;
-   osc.frequency.value=freq;
-   gain.gain.setValueAtTime(.001,now);
-   gain.gain.linearRampToValueAtTime(.2,now+.12);
-   gain.gain.exponentialRampToValueAtTime(.001,now+melody.tempo/1000*.85);
-   osc.connect(gain);
-   gain.connect(master);
-   osc.start(now);
-   osc.stop(now+melody.tempo/1000);
-  }
-
-  noteIndex++;
-  poemTimers.push(setTimeout(playNext,melody.tempo));
- }
- playNext();
-}
-
-function togglePoemMusic(index){
- if(poemPlaying)stopPoemMusic();
- else playPoemMusic(index);
-}
-
 function openPoem(i){
- stopPoemMusic();
  current=poems[i][0]+"\n\n"+poems[i][1];
  document.getElementById("title").textContent=poems[i][0];
  document.getElementById("text").textContent=poems[i][1];
  document.getElementById("copy").textContent="СКОПИРОВАТЬ СТИХ";
- document.getElementById("poemMusicToggle").onclick=()=>togglePoemMusic(i);
- document.getElementById("poemMusicStatus").textContent="Музыка выключена";
  document.getElementById("modal").classList.add("open");
  document.body.style.overflow="hidden";
 }
 function closePoem(){
- stopPoemMusic();
  document.getElementById("modal").classList.remove("open");
  document.body.style.overflow="";
 }
