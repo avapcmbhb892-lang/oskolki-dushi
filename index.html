@@ -830,6 +830,62 @@ a, button {
  #crystalCursor.visible {opacity:1}
 }
 
+
+/* MOBILE PREMIUM DOCK */
+.mobile-dock {
+ display:none;
+}
+@media(max-width:650px) {
+ body { padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
+ .mobile-dock {
+  position:fixed;
+  z-index:1000;
+  left:12px;
+  right:12px;
+  bottom:calc(10px + env(safe-area-inset-bottom));
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  padding:9px 7px;
+  border:1px solid rgba(196,154,255,.22);
+  border-radius:19px;
+  background:rgba(15,11,23,.86);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  box-shadow:0 8px 35px rgba(0,0,0,.38),0 0 24px rgba(150,90,220,.10);
+  transition:opacity .2s ease,transform .2s ease;
+ }
+ .mobile-dock a {
+  display:flex;
+  min-width:0;
+  min-height:43px;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:3px;
+  color:#cbb5e8;
+  text-decoration:none;
+  font:600 9px/1.2 Manrope,sans-serif;
+  letter-spacing:.5px;
+  border-radius:12px;
+  -webkit-tap-highlight-color:transparent;
+ }
+ .mobile-dock a:active {
+  background:rgba(196,154,255,.13);
+  color:#fff;
+ }
+ .mobile-dock .dock-icon {
+  font-size:18px;
+  line-height:1;
+  color:#c49aff;
+ }
+ body.poem-open .mobile-dock {
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(12px);
+ }
+}
+
 </style>
 </head>
 <body>
@@ -1033,6 +1089,17 @@ a, button {
 
 </div>
 
+
+<!-- MOBILE PREMIUM DOCK -->
+<nav class="mobile-dock" aria-label="Мобильная навигация">
+ <a href="#poems"><span class="dock-icon">✧</span><span>СТИХИ</span></a>
+ <a href="#about"><span class="dock-icon">◈</span><span>СБОРНИК</span></a>
+ <a href="#author"><span class="dock-icon">♙</span><span>АВТОР</span></a>
+ <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">
+  <span class="dock-icon">↑</span><span>НАВЕРХ</span>
+ </a>
+</nav>
+
 <footer>ОСКОЛКИ ДУШИ · POETRY COLLECTION</footer>
 
 <div class="modal" id="modal">
@@ -1140,6 +1207,7 @@ poems.forEach((p,i)=>{
 });
 
 let current="";
+let currentIndex=0;
 function toggleReadingMode(){
  const modal = document.getElementById("modal");
  const button = document.getElementById("readingToggle");
@@ -1149,6 +1217,7 @@ function toggleReadingMode(){
 }
 
 function openPoem(i){
+ currentIndex=i;
  current=poems[i][0]+"\n\n"+poems[i][1];
  document.getElementById("title").textContent=poems[i][0];
  document.getElementById("text").textContent=poems[i][1];
@@ -1158,6 +1227,7 @@ function openPoem(i){
  document.getElementById("readingToggle").textContent="РЕЖИМ ЧТЕНИЯ";
  document.getElementById("modal").classList.add("open");
  document.body.style.overflow="hidden";
+ document.body.classList.add("poem-open");
 }
 function closePoem(){
  document.getElementById("modal").classList.remove("open");
@@ -1165,6 +1235,7 @@ function closePoem(){
  document.getElementById("readingToggle").classList.remove("active");
  document.getElementById("readingToggle").textContent="РЕЖИМ ЧТЕНИЯ";
  document.body.style.overflow="";
+ document.body.classList.remove("poem-open");
 }
 async function copyPoem(){
  try{
@@ -1229,6 +1300,49 @@ for(let i=0;i<12;i++){
  document.body.appendChild(c);
 }
 
+
+
+/* MOBILE POEM SWIPES */
+(function(){
+ const modal = document.getElementById("modal");
+ const paper = modal && modal.querySelector(".paper");
+ if(!modal || !paper) return;
+
+ let startX = 0;
+ let startY = 0;
+ let tracking = false;
+
+ paper.addEventListener("touchstart", function(e){
+  if(e.touches.length !== 1 || e.target.closest("button")) {
+   tracking = false;
+   return;
+  }
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  tracking = true;
+ }, {passive:true});
+
+ paper.addEventListener("touchend", function(e){
+  if(!tracking || !modal.classList.contains("open")) return;
+  tracking = false;
+  if(!e.changedTouches.length) return;
+
+  const dx = e.changedTouches[0].clientX - startX;
+  const dy = e.changedTouches[0].clientY - startY;
+
+  if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+   const next = dx < 0 ? currentIndex + 1 : currentIndex - 1;
+   if(next >= 0 && next < poems.length) openPoem(next);
+   return;
+  }
+
+  if(dy > 95 && Math.abs(dy) > Math.abs(dx) * 1.4 && paper.scrollTop <= 4) {
+   closePoem();
+  }
+ }, {passive:true});
+
+ paper.addEventListener("touchcancel", function(){ tracking = false; }, {passive:true});
+})();
 
 </script>
 
