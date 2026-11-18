@@ -67,7 +67,20 @@ nav a:hover{color:var(--purple)}
 .orb:after { display:none; }
 .soul-crystal {
  width:100%;height:100%;overflow:visible;
- filter:drop-shadow(0 0 18px #9d80ff66);
+ filter:drop-shadow(0 0 13px #a98aff77) drop-shadow(0 0 32px #7953c955);
+}
+.orb {
+ isolation:isolate;
+}
+.orb:before {
+ content:"";
+ position:absolute;
+ inset:8%;
+ border-radius:50%;
+ background:radial-gradient(circle,rgba(163,119,255,.18),rgba(112,75,180,.06) 48%,transparent 72%);
+ filter:blur(13px);
+ z-index:-1;
+ animation:crystalGlow 5s ease-in-out infinite alternate;
 }
 .crystal-glow {
  animation:crystalGlow 4s ease-in-out infinite alternate;
@@ -763,34 +776,6 @@ a, button {
  pointer-events:none;
 }
 
-/* Reading mode */
-.modal.reading-mode {
- background:rgba(5,4,9,.97);
-}
-.modal.reading-mode .paper {
- width:min(780px,94vw);
- padding:clamp(28px,6vw,65px);
- background:linear-gradient(155deg,#15111e,#0d0b12);
- border-color:#b99ae955;
- box-shadow:0 0 65px #8c62bb20;
-}
-.modal.reading-mode .poem {
- max-width:560px;
- margin:35px auto;
- font-size:clamp(19px,3vw,23px);
- line-height:2.05;
- letter-spacing:.015em;
- color:#e2d7eb;
-}
-.modal.reading-mode .paper h2 {
- font-size:clamp(36px,7vw,52px);
-}
-#readingToggle.active {
- background:#48345f;
- border-color:#b99ae9;
- color:#fff;
-}
-
 @media(prefers-reduced-motion:reduce) {
  .ambient-glow,.ambient-particle {animation:none}
 }
@@ -831,58 +816,93 @@ a, button {
 }
 
 
+
 /* MOBILE PREMIUM DOCK */
-.mobile-dock {
- display:none;
-}
+.mobile-dock { display:none; }
+
 @media(max-width:650px) {
- body { padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
+ body {
+  padding-bottom:calc(88px + env(safe-area-inset-bottom));
+ }
  .mobile-dock {
   position:fixed;
   z-index:1000;
-  left:12px;
-  right:12px;
-  bottom:calc(10px + env(safe-area-inset-bottom));
+  left:15px;
+  right:15px;
+  bottom:calc(12px + env(safe-area-inset-bottom));
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:5px;
-  padding:9px 7px;
-  border:1px solid rgba(196,154,255,.22);
-  border-radius:19px;
-  background:rgba(15,11,23,.86);
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  box-shadow:0 8px 35px rgba(0,0,0,.38),0 0 24px rgba(150,90,220,.10);
-  transition:opacity .2s ease,transform .2s ease;
+  padding:8px;
+  border:1px solid rgba(201,166,255,.25);
+  border-radius:23px;
+  background:linear-gradient(145deg,rgba(35,25,49,.88),rgba(12,9,19,.91));
+  -webkit-backdrop-filter:blur(28px) saturate(155%);
+  backdrop-filter:blur(28px) saturate(155%);
+  box-shadow:
+   0 12px 40px rgba(0,0,0,.48),
+   inset 0 1px 0 rgba(255,255,255,.09),
+   0 0 28px rgba(155,105,230,.13);
+  transition:opacity .35s ease,transform .35s cubic-bezier(.2,.8,.2,1);
+  animation:dockAppear .65s cubic-bezier(.2,.8,.2,1) both;
+ }
+ @keyframes dockAppear {
+  from {opacity:0;transform:translateY(22px);}
+  to {opacity:1;transform:translateY(0);}
  }
  .mobile-dock a {
+  position:relative;
   display:flex;
   min-width:0;
-  min-height:43px;
+  min-height:51px;
   align-items:center;
   justify-content:center;
   flex-direction:column;
-  gap:3px;
-  color:#cbb5e8;
+  gap:5px;
+  color:#a99bb9;
   text-decoration:none;
-  font:600 9px/1.2 Manrope,sans-serif;
-  letter-spacing:.5px;
-  border-radius:12px;
+  font:600 9px/1.1 Manrope,sans-serif;
+  letter-spacing:.65px;
+  border:1px solid transparent;
+  border-radius:16px;
+  transition:color .25s ease,background .25s ease,border-color .25s ease,transform .25s ease;
   -webkit-tap-highlight-color:transparent;
  }
  .mobile-dock a:active {
-  background:rgba(196,154,255,.13);
-  color:#fff;
+  transform:scale(.92);
+ }
+ .mobile-dock a.active {
+  color:#f0e5ff;
+  background:linear-gradient(145deg,rgba(169,123,230,.2),rgba(112,75,160,.09));
+  border-color:rgba(197,160,255,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
  }
  .mobile-dock .dock-icon {
-  font-size:18px;
-  line-height:1;
-  color:#c49aff;
+  width:21px;
+  height:21px;
+  display:grid;
+  place-items:center;
+  color:#b99aee;
+  transition:transform .3s ease,color .3s ease,filter .3s ease;
+ }
+ .mobile-dock .dock-icon svg {
+  width:20px;
+  height:20px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.65;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+ }
+ .mobile-dock a.active .dock-icon {
+  color:#e0c5ff;
+  transform:translateY(-2px);
+  filter:drop-shadow(0 0 7px #b78aff99);
  }
  body.poem-open .mobile-dock {
   opacity:0;
   pointer-events:none;
-  transform:translateY(12px);
+  transform:translateY(18px);
  }
 }
 
@@ -1092,11 +1112,21 @@ a, button {
 
 <!-- MOBILE PREMIUM DOCK -->
 <nav class="mobile-dock" aria-label="Мобильная навигация">
- <a href="#poems"><span class="dock-icon">✧</span><span>СТИХИ</span></a>
- <a href="#about"><span class="dock-icon">◈</span><span>СБОРНИК</span></a>
- <a href="#author"><span class="dock-icon">♙</span><span>АВТОР</span></a>
- <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">
-  <span class="dock-icon">↑</span><span>НАВЕРХ</span>
+ <a href="#poems" data-section="poems">
+  <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="M12 2.8 14.3 9.7 21.2 12 14.3 14.3 12 21.2 9.7 14.3 2.8 12 9.7 9.7Z"/></svg></span>
+  <span>СТИХИ</span>
+ </a>
+ <a href="#about" data-section="about">
+  <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="m12 2.8 8.2 4.6v9.2L12 21.2l-8.2-4.6V7.4Z"/><path d="m3.8 7.4 8.2 4.7 8.2-4.7M12 12.1v9.1"/></svg></span>
+  <span>СБОРНИК</span>
+ </a>
+ <a href="#author" data-section="author">
+  <span class="dock-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.5-3.5 3.1-5.4 7-5.4s6.5 1.9 7 5.4"/></svg></span>
+  <span>АВТОР</span>
+ </a>
+ <a href="#" data-top="true" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">
+  <span class="dock-icon"><svg viewBox="0 0 24 24"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"/></svg></span>
+  <span>НАВЕРХ</span>
  </a>
 </nav>
 
@@ -1110,7 +1140,6 @@ a, button {
   <div class="poem" id="text"></div>
 
   <div class="actions">
-   <button id="readingToggle" onclick="toggleReadingMode()">РЕЖИМ ЧТЕНИЯ</button>
    <button onclick="copyPoem()" id="copy">СКОПИРОВАТЬ СТИХ</button>
    <button onclick="closePoem()">НАЗАД К СБОРНИКУ</button>
   </div>
@@ -1208,13 +1237,6 @@ poems.forEach((p,i)=>{
 
 let current="";
 let currentIndex=0;
-function toggleReadingMode(){
- const modal = document.getElementById("modal");
- const button = document.getElementById("readingToggle");
- const enabled = modal.classList.toggle("reading-mode");
- button.classList.toggle("active", enabled);
- button.textContent = enabled ? "ОБЫЧНЫЙ РЕЖИМ" : "РЕЖИМ ЧТЕНИЯ";
-}
 
 function openPoem(i){
  currentIndex=i;
@@ -1222,18 +1244,12 @@ function openPoem(i){
  document.getElementById("title").textContent=poems[i][0];
  document.getElementById("text").textContent=poems[i][1];
  document.getElementById("copy").textContent="СКОПИРОВАТЬ СТИХ";
- document.getElementById("modal").classList.remove("reading-mode");
- document.getElementById("readingToggle").classList.remove("active");
- document.getElementById("readingToggle").textContent="РЕЖИМ ЧТЕНИЯ";
  document.getElementById("modal").classList.add("open");
  document.body.style.overflow="hidden";
  document.body.classList.add("poem-open");
 }
 function closePoem(){
  document.getElementById("modal").classList.remove("open");
- document.getElementById("modal").classList.remove("reading-mode");
- document.getElementById("readingToggle").classList.remove("active");
- document.getElementById("readingToggle").textContent="РЕЖИМ ЧТЕНИЯ";
  document.body.style.overflow="";
  document.body.classList.remove("poem-open");
 }
@@ -1301,6 +1317,28 @@ for(let i=0;i<12;i++){
 }
 
 
+
+
+/* MOBILE DOCK ACTIVE SECTION */
+(function(){
+ const links = [...document.querySelectorAll(".mobile-dock [data-section]")];
+ const sections = links.map(a => document.getElementById(a.dataset.section)).filter(Boolean);
+ if(!("IntersectionObserver" in window) || !sections.length) return;
+
+ const observer = new IntersectionObserver(entries => {
+  const visible = entries.filter(e => e.isIntersecting)
+   .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+  if(!visible) return;
+  links.forEach(a => {
+   const active = a.dataset.section === visible.target.id;
+   a.classList.toggle("active",active);
+   if(active) a.setAttribute("aria-current","location");
+   else a.removeAttribute("aria-current");
+  });
+ },{rootMargin:"-20% 0px -55% 0px",threshold:[0,.15,.35,.6]});
+
+ sections.forEach(section => observer.observe(section));
+})();
 
 /* MOBILE POEM SWIPES */
 (function(){
