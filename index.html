@@ -429,6 +429,47 @@ button:active {
 }
 
 
+
+/* AUTHOR — NOX VESPER */
+.author-section{
+ max-width:760px;margin:65px auto 35px;padding:65px 35px;
+ text-align:center;position:relative;overflow:hidden;
+ border:1px solid var(--line);
+ background:linear-gradient(145deg,#171321aa,#0d0b13dd);
+ box-shadow:0 25px 90px #0005;
+}
+.author-section:before{
+ content:"";position:absolute;width:280px;height:280px;
+ left:50%;top:-190px;transform:translateX(-50%);
+ background:#a77bd52b;filter:blur(65px);pointer-events:none;
+}
+.author-mark{
+ width:65px;height:65px;margin:0 auto 27px;border-radius:50%;
+ border:1px solid #b99ae966;display:grid;place-items:center;
+ color:#d9c1f2;font:32px "Cormorant Garamond",serif;
+ box-shadow:0 0 45px #a779cf22;
+}
+.author-name{
+ position:relative;font:400 clamp(43px,8vw,66px)/1.1 "Cormorant Garamond",serif;
+ letter-spacing:.035em;color:#e9ddf3;margin:15px 0;
+}
+.author-subtitle{
+ color:var(--gold);font-size:9px;letter-spacing:.34em;
+ text-transform:uppercase;margin:20px 0 30px;
+}
+.author-description{
+ max-width:490px;margin:0 auto;
+ color:#aaa0b5;font:italic 20px/1.85 "Cormorant Garamond",serif;
+}
+.author-signature{
+ margin-top:35px;color:#c8addf;
+ font:italic 17px "Cormorant Garamond",serif;
+}
+@media(max-width:650px){
+ .author-section{margin:45px auto 20px;padding:48px 22px}
+ .author-description{font-size:18px}
+}
+
 </style>
 </head>
 <body>
@@ -440,7 +481,7 @@ button:active {
 
 <header>
  <div class="logo">ОСКОЛКИ ДУШИ</div>
- <nav><a href="#poems">КОЛЛЕКЦИЯ</a><a href="#about">О СБОРНИКЕ</a></nav>
+ <nav><a href="#poems">КОЛЛЕКЦИЯ</a><a href="#about">О СБОРНИКЕ</a><a href="#author">АВТОР</a></nav>
 </header>
 
 <section class="hero">
@@ -469,6 +510,22 @@ button:active {
   <div class="line"></div>
   <div class="eyebrow">НЕ ВСЁ СКАЗАННОЕ МОЖНО УСЛЫШАТЬ</div>
  </section>
+
+ <section class="author-section reveal" id="author">
+  <div class="eyebrow">THE PERSON BEHIND THE WORDS</div>
+  <div class="author-mark">N</div>
+  <h2 class="author-name">Nox Vesper</h2>
+  <div class="author-subtitle">АВТОР · ОСКОЛКИ ДУШИ</div>
+  <p class="author-description">
+   Не каждую мысль легко произнести вслух.
+   Иногда слова находят своё место на бумаге —
+   между тишиной, воспоминаниями и чувствами.
+   Этот сборник — пространство для таких слов.
+  </p>
+  <div class="line"></div>
+  <div class="author-signature">«Тот, кто превращает тишину в слова»</div>
+ </section>
+
 </main>
 
 
