@@ -470,6 +470,25 @@ button:active {
  .author-description{font-size:18px}
 }
 
+/* AUTHOR BIO TOGGLE */
+
+.author-toggle{
+ display:flex;align-items:center;justify-content:center;gap:13px;
+ margin:30px auto 0;padding:12px 20px;
+ color:#d7c2eb;background:#211a2c;
+ border:1px solid #9474ad66;
+ font:10px Manrope,sans-serif;letter-spacing:.16em;
+ cursor:pointer;transition:background .3s,border-color .3s;
+}
+.author-toggle:hover{background:#30233e;border-color:#b99ae9}
+.author-toggle span{font-size:16px;color:var(--gold)}
+.author-bio{margin-top:30px;animation:authorReveal .4s ease}
+.author-bio[hidden]{display:none!important}
+@keyframes authorReveal{
+ from{opacity:0;transform:translateY(9px)}
+ to{opacity:1;transform:translateY(0)}
+}
+
 </style>
 </head>
 <body>
@@ -511,20 +530,48 @@ button:active {
   <div class="eyebrow">НЕ ВСЁ СКАЗАННОЕ МОЖНО УСЛЫШАТЬ</div>
  </section>
 
- <section class="author-section reveal" id="author">
+
+<section class="author-section reveal" id="author">
   <div class="eyebrow">THE PERSON BEHIND THE WORDS</div>
   <div class="author-mark">N</div>
   <h2 class="author-name">Nox Vesper</h2>
   <div class="author-subtitle">АВТОР · ОСКОЛКИ ДУШИ</div>
-  <p class="author-description">
-   Не каждую мысль легко произнести вслух.
-   Иногда слова находят своё место на бумаге —
-   между тишиной, воспоминаниями и чувствами.
-   Этот сборник — пространство для таких слов.
-  </p>
-  <div class="line"></div>
-  <div class="author-signature">«Тот, кто превращает тишину в слова»</div>
- </section>
+
+  <button class="author-toggle" id="authorToggle"
+          type="button" aria-expanded="true"
+          aria-controls="authorBio"
+          onclick="toggleAuthorBio()">
+    СКРЫТЬ БИОГРАФИЮ <span id="authorArrow">−</span>
+  </button>
+
+  <div class="author-bio" id="authorBio">
+    <p class="author-description">
+      Nox Vesper — автор, предпочитающий оставаться за страницами своих произведений.
+    </p>
+    <p class="author-description">
+      Его творчество рождается из размышлений о человеческих чувствах,
+      одиночестве, воспоминаниях и невысказанных словах.
+      В его стихах переплетаются свет и тьма, хрупкость и сила,
+      тишина и внутренний голос.
+    </p>
+    <p class="author-description">
+      Он не стремится давать ответы или учить жизни.
+      Его задача — превращать чувства в строки, а строки —
+      в истории, в которых читатель может узнать частичку себя.
+    </p>
+    <p class="author-description">
+      «Осколки души» — не просто сборник стихотворений.
+      Это место, где каждая строка хранит отдельную историю,
+      а за каждым словом скрывается нечто большее.
+    </p>
+    <div class="line"></div>
+    <div class="author-signature">
+      «Я не ищу, чтобы меня поняли. Я просто оставляю слова тем,
+      кому они однажды понадобятся».
+    </div>
+  </div>
+</section>
+
 
 </main>
 
@@ -549,6 +596,22 @@ button:active {
 </div>
 
 <script>
+
+function toggleAuthorBio(){
+ const bio = document.getElementById("authorBio");
+ const button = document.getElementById("authorToggle");
+ const arrow = document.getElementById("authorArrow");
+ if(!bio || !button || !arrow) return;
+
+ const willHide = !bio.hidden;
+ bio.hidden = willHide;
+ button.setAttribute("aria-expanded", String(!willHide));
+ button.firstChild.textContent = willHide
+   ? "ПОКАЗАТЬ БИОГРАФИЮ "
+   : "СКРЫТЬ БИОГРАФИЮ ";
+ arrow.textContent = willHide ? "+" : "−";
+}
+
 const poems=[
 ["Маска тишины",`Я прячу боль за маской тишины,
 Где все мои мечты давно погребены.
