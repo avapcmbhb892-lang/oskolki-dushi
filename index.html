@@ -814,7 +814,7 @@ a, button {
   pointer-events:none;
   opacity:0;
   transform:translate3d(-100px,-100px,0);
-  transition:opacity .12s ease, scale .12s ease;
+  transition:opacity .12s ease;
   will-change:transform;
  }
 
@@ -828,8 +828,6 @@ a, button {
  }
 
  #crystalCursor.visible {opacity:1}
- #crystalCursor.hovering {scale:1.45}
- #crystalCursor.clicking {scale:.72}
 }
 
 </style>
@@ -1252,29 +1250,16 @@ for(let i=0;i<12;i++){
   cursor.classList.add("visible");
  }, {passive:true});
 
- document.addEventListener("pointerover", event => {
-  const target = event.target;
-  cursor.classList.toggle(
-   "hovering",
-   !!(target && target.closest &&
-   target.closest("a,button,[role='button'],input,select,textarea"))
-  );
- }, {passive:true});
 
- document.addEventListener("pointerdown", () => {
-  cursor.classList.add("clicking");
- });
-
- document.addEventListener("pointerup", () => {
-  cursor.classList.remove("clicking");
- });
 
  document.addEventListener("pointerleave", () => {
   cursor.classList.remove("visible");
  });
 
- document.addEventListener("pointerenter", () => {
-  cursor.classList.remove("visible");
+ document.addEventListener("pointerenter", event => {
+  cursor.style.transform =
+   `translate3d(${event.clientX - 4}px,${event.clientY - 4}px,0)`;
+  cursor.classList.add("visible");
  });
 })();</script>
 
