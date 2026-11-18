@@ -500,6 +500,14 @@ input, textarea {
   user-select: text;
 }
 
+
+/* FORCE DISABLE MOBILE TEXT SELECTION */
+html, body, body *:not(input):not(textarea) {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
 </style>
 </head>
 <body>
