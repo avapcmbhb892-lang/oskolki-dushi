@@ -489,6 +489,17 @@ button:active {
  to{opacity:1;transform:translateY(0)}
 }
 
+
+/* DISABLE TEXT SELECTION */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 </style>
 </head>
 <body>
