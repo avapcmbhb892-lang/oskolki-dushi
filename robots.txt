@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avapcmbhb892-lang.github.io/oskolki-dushi/sitemap.xml
