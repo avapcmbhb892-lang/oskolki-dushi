@@ -315,6 +315,122 @@ button:active {
   outline-offset: 4px;
 }
 
+
+/* ORIGINAL POEM ART */
+.card-art {
+ height:112px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ margin:10px 0 16px;
+ opacity:.9;
+ transition:transform .7s ease,opacity .7s ease,filter .7s ease;
+}
+.card-art svg {
+ width:min(100%,190px);
+ height:112px;
+ overflow:visible;
+ filter:drop-shadow(0 0 12px #a17acb22);
+}
+@media(hover:hover) {
+ .card:hover .card-art {
+  transform:translateY(-4px) scale(1.045);
+  opacity:1;
+  filter:drop-shadow(0 0 15px #a17acb44);
+ }
+}
+.modal-art {
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ height:105px;
+ margin:4px auto 8px;
+ animation:artAppear .8s ease both;
+}
+.modal-art svg {
+ width:180px;
+ height:115px;
+ overflow:visible;
+ filter:drop-shadow(0 0 13px #795b9a44);
+}
+@keyframes artAppear {
+ from {opacity:0;transform:translateY(12px) scale(.94)}
+ to {opacity:1;transform:translateY(0) scale(1)}
+}
+.paper h2 {animation:poemTitleIn .65s .08s both}
+.paper .poem {animation:poemTextIn .8s .15s both}
+@keyframes poemTitleIn {
+ from {opacity:0;transform:translateY(9px)}
+ to {opacity:1;transform:translateY(0)}
+}
+@keyframes poemTextIn {
+ from {opacity:0;transform:translateY(13px)}
+ to {opacity:1;transform:translateY(0)}
+}
+
+/* FINAL PAGE */
+.final-note {
+ position:relative;
+ overflow:hidden;
+ text-align:center;
+ padding:105px 22px 90px;
+ margin:35px auto 0;
+ border-top:1px solid rgba(190,155,225,.17);
+ background:
+ radial-gradient(ellipse at 50% 45%,rgba(116,79,155,.13),transparent 65%),
+ linear-gradient(180deg,transparent,rgba(20,14,29,.48));
+}
+.final-ornament {
+ color:#c5a4e8;
+ font-size:32px;
+ margin-bottom:22px;
+ text-shadow:0 0 24px #b58cde88;
+ animation:finalPulse 4s ease-in-out infinite alternate;
+}
+@keyframes finalPulse {
+ from {opacity:.55;transform:scale(.94)}
+ to {opacity:1;transform:scale(1.08)}
+}
+.final-note h2 {
+ margin:18px 0;
+ color:#eee3f6;
+ font:400 clamp(34px,6vw,53px)/1.15 "Cormorant Garamond",serif;
+ letter-spacing:.015em;
+}
+.final-note p {
+ color:#a99bb5;
+ font:italic 19px/1.8 "Cormorant Garamond",serif;
+}
+.final-line {
+ width:75px;
+ height:1px;
+ margin:30px auto;
+ background:linear-gradient(90deg,transparent,#b995db,transparent);
+}
+.final-signature {
+ color:#d5b9ef;
+ font:italic 27px "Cormorant Garamond",serif;
+ letter-spacing:.08em;
+}
+.final-caption {
+ margin-top:17px;
+ color:#71647d;
+ font:9px Manrope,sans-serif;
+ letter-spacing:.2em;
+}
+@media(max-width:650px) {
+ .card-art {height:100px;margin:7px 0 12px}
+ .card-art svg {height:100px}
+ .modal-art {height:90px}
+ .modal-art svg {height:100px}
+ .final-note {padding:80px 16px 75px}
+ .final-note p {font-size:18px}
+ .final-caption {font-size:8px;line-height:1.8}
+}
+@media(prefers-reduced-motion:reduce) {
+ .final-ornament {animation:none}
+}
+
 .card, .poem-card, .poem-item {
   transition:
     transform .7s cubic-bezier(.2,.75,.25,1),
@@ -1046,7 +1162,7 @@ a, button {
  <section id="poems">
   <div class="section-head reveal">
    <div class="eyebrow">THE COLLECTION</div>
-   <h2>Четыре истории</h2>
+   <h2>Пять историй</h2>
    <p>У КАЖДОЙ ТИШИНЫ ЕСТЬ СВОЙ ГОЛОС</p>
   </div>
   <div class="grid" id="grid"></div>
@@ -1130,12 +1246,22 @@ a, button {
  </a>
 </nav>
 
+<section class="final-note reveal" id="finalNote">
+ <div class="final-ornament" aria-hidden="true">✧</div>
+ <div class="eyebrow">THE LAST PAGE</div>
+ <h2>На этом страницы<br>не заканчиваются.</h2>
+ <p>Некоторые слова остаются с нами<br>даже после того, как книга закрыта.</p>
+ <div class="final-line"></div>
+ <div class="final-signature">Nox Vesper</div>
+ <div class="final-caption">ОСКОЛКИ ДУШИ · ЛИЧНЫЙ ПОЭТИЧЕСКИЙ СБОРНИК</div>
+</section>
 <footer>ОСКОЛКИ ДУШИ · POETRY COLLECTION</footer>
 
 <div class="modal" id="modal">
  <article class="paper">
   <button class="close" onclick="closePoem()">×</button>
   <div class="eyebrow">A FRAGMENT OF THE SOUL</div>
+  <div class="modal-art" id="modalArt"></div>
   <h2 id="title"></h2>
   <div class="poem" id="text"></div>
 
@@ -1162,6 +1288,43 @@ function toggleAuthorBio(){
    : "СКРЫТЬ БИОГРАФИЮ ";
  arrow.textContent = willHide ? "+" : "−";
 }
+
+
+const poemArt=[
+`<svg viewBox="0 0 220 150" role="img" aria-label="Маска тишины">
+ <path d="M110 15C76 15 53 38 53 70c0 34 23 59 57 68 34-9 57-34 57-68 0-32-23-55-57-55Z" fill="none" stroke="#c5a4e8" stroke-width="1.5"/>
+ <path d="M75 67q15-13 30 0M115 67q15-13 30 0" fill="none" stroke="#c5a4e8" stroke-width="2"/>
+ <path d="M93 103q17-12 34 0" fill="none" stroke="#9b79c4" stroke-width="1.5"/>
+ <path d="M110 15v120M53 70h114" stroke="#b995db" opacity=".25"/>
+ <circle cx="110" cy="76" r="68" fill="none" stroke="#a17acb" opacity=".22"/>
+</svg>`,
+`<svg viewBox="0 0 220 150" role="img" aria-label="Осколок души">
+ <path d="m110 12 31 43-10 72-21 13-23-24-9-57Z" fill="#8f6ab8" fill-opacity=".12" stroke="#c9a9e9" stroke-width="1.5"/>
+ <path d="m110 12 2 70 29-27M112 82l-25 34M112 82l29 45M112 82l-2 58" fill="none" stroke="#c9a9e9" stroke-width="1.2"/>
+ <path d="m110 12 31 43-29 27-33-23Z" fill="#d9c4f2" fill-opacity=".12"/>
+ <circle cx="110" cy="82" r="61" fill="none" stroke="#9f7ac7" opacity=".2"/>
+</svg>`,
+`<svg viewBox="0 0 220 150" role="img" aria-label="Одиночество">
+ <circle cx="110" cy="45" r="13" fill="none" stroke="#c5a4e8" stroke-width="1.5"/>
+ <path d="M110 59v48m-23 38 23-38 23 38m-46-27 23-11 23 11" fill="none" stroke="#c5a4e8" stroke-width="1.5"/>
+ <path d="M34 139h152" stroke="#9c7bbd" opacity=".45"/>
+ <circle cx="110" cy="83" r="65" fill="none" stroke="#a17acb" opacity=".18"/>
+ <path d="M45 34 35 25m140 9 10-9M28 83h-9m173 0h-9" stroke="#b995db" opacity=".5"/>
+</svg>`,
+`<svg viewBox="0 0 220 150" role="img" aria-label="Исповедь демона">
+ <path d="M75 66 55 19q31 8 43 34m47 13 20-47q-31 8-43 34" fill="none" stroke="#b995db" stroke-width="2"/>
+ <path d="M70 72q0-39 40-39t40 39v24q-17 34-40 39-23-5-40-39Z" fill="#9b79c4" fill-opacity=".12" stroke="#c5a4e8" stroke-width="1.5"/>
+ <path d="m86 77 13 5m22 0 13-5M99 108q11 8 22 0" fill="none" stroke="#c5a4e8" stroke-width="1.5"/>
+ <circle cx="110" cy="85" r="65" fill="none" stroke="#a17acb" opacity=".2"/>
+</svg>`,
+`<svg viewBox="0 0 220 150" role="img" aria-label="Отражение">
+ <rect x="65" y="14" width="90" height="122" rx="45" fill="none" stroke="#c5a4e8" stroke-width="1.5"/>
+ <path d="M110 15v120" stroke="#b995db" stroke-dasharray="3 5" opacity=".7"/>
+ <path d="M96 54q14-13 28 0m-28 43q14 13 28 0" fill="none" stroke="#c5a4e8" stroke-width="1.5"/>
+ <path d="M85 31q-18 45 0 88M135 31q18 45 0 88" fill="none" stroke="#9f7ac7" opacity=".5"/>
+ <circle cx="110" cy="75" r="68" fill="none" stroke="#a17acb" opacity=".18"/>
+</svg>`
+];
 
 const poems=[
 ["Маска тишины",`Я прячу боль за маской тишины,
@@ -1228,7 +1391,7 @@ const grid=document.getElementById("grid");
 poems.forEach((p,i)=>{
  const card=document.createElement("article");
  card.className="card reveal";
- card.innerHTML=`<div class="card-top"><span class="num">CHAPTER 0${i+1}</span><span class="symbol">✧</span></div><h3></h3><p></p><div class="read">ЧИТАТЬ ПРОИЗВЕДЕНИЕ ↗</div>`;
+ card.innerHTML=`<div class="card-top"><span class="num">CHAPTER 0${i+1}</span><span class="symbol">✧</span></div><div class="card-art">${poemArt[i]}</div><h3></h3><p></p><div class="read">ЧИТАТЬ ПРОИЗВЕДЕНИЕ ↗</div>`;
  card.querySelector("h3").textContent=p[0];
  card.querySelector("p").textContent=p[1].split("\n")[0];
  card.onclick=()=>openPoem(i);
@@ -1241,6 +1404,7 @@ let currentIndex=0;
 function openPoem(i){
  currentIndex=i;
  current=poems[i][0]+"\n\n"+poems[i][1];
+ document.getElementById("modalArt").innerHTML=poemArt[i];
  document.getElementById("title").textContent=poems[i][0];
  document.getElementById("text").textContent=poems[i][1];
  document.getElementById("copy").textContent="СКОПИРОВАТЬ СТИХ";
